@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script type="text/javascript" src="../plok.js"></script>
+  </head>
+
+  <body>
+
+    <div id="graph"></div>
+
+    <script type="text/javascript">
+
+      var d = new plok.data();
+      var now = +(new Date());
+      var x = 100;
+      for (var i=now-1000; i<now; i++) {
+        x += (Math.random() - 0.5) * 5;
+        d.append(i, x);
+      }
+
+      var g = new plok.graph(d);
+      g.append('graph');
+      g.draw();
+
+    </script>
+
+
+
+  </body>
+
+</html>
