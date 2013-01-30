@@ -27,7 +27,7 @@ var COLORS = [
 
 plok.view = function() {
   this.end = +(new Date());
-  this.scale = 1.0; // miliseconds per pixel
+  this.scale = 100.0; // miliseconds per pixel
   this.graphs = [];
   this.add_graph = function(g) {
     this.graphs.push(g);
@@ -85,19 +85,27 @@ plok.data = function(data) {
 
 };
 
+// TODO: axis
+// TODO: multiple data
+// TODO: mouse events
 
 plok.graph = function(data, view) {
   var canvas = this.canvas = document.createElement('canvas');
   var ctx = this.ctx = this.canvas.getContext('2d');
   var w = canvas.width = 480;
   var h = canvas.height = 240;
-  view = view || _view;
+  view = this.view = view || _view;
+
+  this.container = document.createElement('div');
+  this.container.appendChild(this.canvas);
+
+
 
   this.append = function(dom) {
     if (typeof dom === 'string') {
       dom = document.getElementById(dom);
     }
-    dom.appendChild(canvas);
+    dom.appendChild(this.container);
   };
 
   var draw = this.draw = function() {
@@ -117,7 +125,6 @@ plok.graph = function(data, view) {
     for (var x = 0; x < w; x++) {
       y = d[x];
       ctx.fillRect(x, 0, 1, y);
-      // console.log([x,y]);
     }
     var p = null;
     var e, s;
@@ -129,7 +136,6 @@ plok.graph = function(data, view) {
       e = Math.abs(p - y) + 2;
       p = y;
       ctx.fillRect(x, s, 1, e);
-      // console.log([x, s, h]);
     }
 
     ctx.restore();

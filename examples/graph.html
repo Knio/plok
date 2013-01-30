@@ -14,7 +14,7 @@
       var d = new plok.data();
       var now = +(new Date());
       var x = 100;
-      for (var i=now-1000; i<now; i++) {
+      for (var i=now-100000; i<now; i+=100) {
         x += (Math.random() - 0.5) * 5;
         d.append(i, x);
       }
@@ -22,6 +22,14 @@
       var g = new plok.graph(d);
       g.append('graph');
       g.draw();
+
+      window.setInterval(function() {
+        x += (Math.random() - 0.5) * 5;
+        now = new Date();
+        d.append(now, x);
+        g.view.end = now;
+        g.draw();
+      }, 100);
 
     </script>
 
