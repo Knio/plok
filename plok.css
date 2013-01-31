@@ -1,0 +1,14 @@
+
+div.plok-chart-root > svg {
+    display: block;
+    font: 10px sans-serif;
+}
+
+
+div.plok-chart-root > svg line {
+  background: #000;
+  opacity: .2;
+  z-index: 2;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
