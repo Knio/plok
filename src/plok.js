@@ -87,17 +87,34 @@ plok.data = function(data) {
 // TODO: multiple data
 // TODO: mouse events
 
-plok.graph = function(data, view) {
-  var canvas = this.canvas = document.createElement('canvas');
-  var ctx = this.ctx = this.canvas.getContext('2d');
-  var w = canvas.width = 480;
-  var h = canvas.height = 240;
+plok.chart = function(data, view) {
   view = this.view = view || _view;
 
+
+  var canvas = this.canvas = document.createElement('canvas');
+  var svg    = this.svg    = document.createElement('svg');
+
+  var w = canvas.width  = 480;
+  var h = canvas.height = 240;
+
+  var scale = d3.time.scale();
+  var axis = d3.svg.axis();
+  var _ax;
+
+  (function() {
+
+    var d = d3.select(svg);
+    d.attr('width', w).attr('height', 30).attr('class', 'axis');
+    _ax = d.append('g').attr('transform', 'translate(0, 0)').call(axis);
+
+  }).call(this);
+
   this.container = document.createElement('div');
+  this.container.setAttribute('class', 'plok-chart-root');
+  this.container.appendChild(this.svg);
   this.container.appendChild(this.canvas);
 
-
+  var ctx = this.ctx = this.canvas.getContext('2d');
 
   this.append = function(dom) {
     if (typeof dom === 'string') {
@@ -106,7 +123,19 @@ plok.graph = function(data, view) {
     dom.appendChild(this.container);
   };
 
-  var draw = this.draw = function() {
+  this.update = function() {
+    var stop = view.end;
+    var start = stop - view.scale * w;
+
+    scale.domain([start, stop]);
+    scale.range([0, w]);
+    axis.scale(scale);
+    _ax.call(axis);
+
+    draw();
+  }
+
+  var draw = function() {
     ctx.save();
     ctx.scale(1, -1);
     ctx.translate(0, -h);

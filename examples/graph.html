@@ -3,6 +3,7 @@
 
   <head>
     <script type="text/javascript" src="../plok.js"></script>
+    <link rel="stylesheet" href="../plok.css" type="text/css" />
   </head>
 
   <body>
@@ -19,21 +20,19 @@
         d.append(i, x);
       }
 
-      var g = new plok.graph(d);
+      var g = new plok.chart(d);
       g.append('graph');
-      g.draw();
+      g.update();
 
       window.setInterval(function() {
         x += (Math.random() - 0.5) * 5;
         now = new Date();
         d.append(now, x);
         g.view.end = now;
-        g.draw();
+        g.update();
       }, 100);
 
     </script>
-
-
 
   </body>
 

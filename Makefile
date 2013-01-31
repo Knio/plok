@@ -1,4 +1,9 @@
-all: plok.js
+all: \
+	plok.js \
+	plok.css
+
+plok.css: src/plok.css
+	cat $< > $@
 
 plok.js: \
 	build/plok.js \
@@ -23,7 +28,7 @@ build/%.js: src/%.js
 
 clean:
 	-rm build/* -r
-	-rm plok.js plok.min.js
+	-rm plok.js plok.min.js plok.css
 
 
 .PHONY: clean
