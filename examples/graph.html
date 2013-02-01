@@ -8,9 +8,9 @@
 
   <body>
 
-    <div id="graph"></div>
-
+    <div id="content"></div>
     <script type="text/javascript">
+
 
       var d = new plok.data();
       var now = +(new Date());
@@ -21,7 +21,7 @@
       }
 
       var g = new plok.chart(d);
-      g.append('graph');
+      g.append('content');
       g.update();
 
       window.setInterval(function() {
@@ -33,6 +33,7 @@
       }, 100);
 
     </script>
+
 
   </body>
 

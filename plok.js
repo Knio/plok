@@ -94,7 +94,8 @@ plok.chart = function(data, view) {
 
 
   var canvas = this.canvas = document.createElement('canvas');
-  var svg    = this.svg    = document.createElement('svg');
+  var svg    = this.svg    =
+      document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
   var w = canvas.width  = 480;
   var h = canvas.height = 240;
@@ -106,8 +107,8 @@ plok.chart = function(data, view) {
   (function() {
 
     var d = d3.select(svg);
-    d.attr('width', w).attr('height', 30).attr('class', 'axis');
-    _ax = d.append('g').attr('transform', 'translate(0, 0)').call(axis);
+    d.attr('width', w + '').attr('height', 30 + '').attr('class', 'axis');
+    _ax = d.append('g');
 
   }).call(this);
 
