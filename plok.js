@@ -28,10 +28,61 @@ var COLORS = [
 plok.view = function() {
   this.end = +(new Date());
   this.scale = 100.0; // miliseconds per pixel
-  this.graphs = [];
-  this.add_graph = function(g) {
-    this.graphs.push(g);
+  this.charts = [];
+  this.max = -1;
+  this.min =  0;
+  this.timer = null;
+
+  this.add_chart = function(g) {
+    this.charts.push(g);
   };
+
+  this.set = function(x) {
+    this.end = x;
+    this.update();
+  };
+
+  this.scroll = function(d) {
+    this.stopanimate();
+    var x = this.end + d * this.scale * 16;
+    if (this.max === -1) {
+      var now = +(new Date());
+      if (x > now) {
+        x = now;
+        this.animate();
+      }
+    } else if (this.max) {
+      x = Math.min(x, this.max);
+    }
+    if (this.min) {
+      x = Math.max(x, this.min);
+    }
+    this.set(x);
+  };
+
+  this.animate = function(d) {
+    this.stopanimate();
+    d = d || this.scale;
+    var t = this;
+    this.timer = window.setInterval(function() {
+      t.set(+(new Date()));
+      t.update();
+    }, d);
+  };
+
+  this.stopanimate = function() {
+    if (this.timer) {
+      window.clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  this.update = function() {
+    for (var i = 0; i < this.charts.length; i++) {
+      this.charts[i].update();
+    }
+  }
+
 };
 var _view = new plok.view();
 
@@ -56,41 +107,67 @@ plok.data = function(data) {
     var s = 0;
     var e = n;
     var m, t;
+
+    var _i = 0;
+
     while (s < e - 1) {
       m = Math.floor((s + e) / 2);
       t = data[m][0];
       if (t < start) {
-        s = m + 1;
+        s = m;
       } else {
         e = m;
       }
+      if (_i++ > 1000) {
+        throw 'infinite loop';
+      }
     }
 
+    data.push([stop + 1, 0]);
     var d = [];
-    var v;
+
+    s--;
+    // data[s][0] is <= start
+    // s may be -1
+
+    var v = 0;
+    var t1 = 0;
+    var t2 = data[s + 1][0];
+
+    if (s >= 0) {
+      v = data[s][1];
+      t1 = data[s][0];
+    }
 
     for (var i = start; i < stop; i += step) {
-      do {
-        var _d = data[s];
-        var t = _d[0];
-        if (t >= i + step) { break; }
-        v = _d[1];
+      var a = 0;
+      var x = i + step;
+      t1 = i;
+      while (t2 < x) {
+        a += (t2 - t1) * v;
         s++;
-      } while (s != n);
-      s--;
-      d.push(v);
+        v = data[s][1];
+        t1 = t2;
+        t2 = data[s + 1][0];
+      }
+      a += (x - t1) * v;
+      d.push(a / step);
+
     }
+
+    data.pop();
+
     return d;
+
   }
 
 };
 
-// TODO: axis
 // TODO: multiple data
-// TODO: mouse events
 
 plok.chart = function(data, view) {
   view = this.view = view || _view;
+  view.add_chart(this);
 
 
   var canvas = this.canvas = document.createElement('canvas');
@@ -102,13 +179,14 @@ plok.chart = function(data, view) {
 
   var scale = d3.time.scale();
   var axis = d3.svg.axis();
+  axis.orient('top');
   var _ax;
 
   (function() {
 
     var d = d3.select(svg);
-    d.attr('width', w + '').attr('height', 30 + '').attr('class', 'axis');
-    _ax = d.append('g');
+    d.attr('width', w).attr('height', 20).attr('class', 'axis');
+    _ax = d.append('g').attr('transform', 'translate(0, 20)');
 
   }).call(this);
 
@@ -116,6 +194,9 @@ plok.chart = function(data, view) {
   this.container.setAttribute('class', 'plok-chart-root');
   this.container.appendChild(this.svg);
   this.container.appendChild(this.canvas);
+  this.container.addEventListener('mousewheel', function(e) {
+    view.scroll(e.wheelDeltaY / 120.);
+  }, false);
 
   var ctx = this.ctx = this.canvas.getContext('2d');
 

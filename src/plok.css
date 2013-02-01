@@ -9,6 +9,11 @@ div.plok-chart-root > svg line {
   background: #000;
   opacity: .2;
   z-index: 2;
+  fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
+}
+
+div.plok-chart-root > svg path {
+  display: none;
 }

@@ -11,26 +11,19 @@
     <div id="content"></div>
     <script type="text/javascript">
 
-
+      var view = new plok.view();
       var d = new plok.data();
       var now = +(new Date());
       var x = 100;
-      for (var i=now-100000; i<now; i+=100) {
+      for (var i=now-100000; i<now+100000; i+=100) {
         x += (Math.random() - 0.5) * 5;
         d.append(i, x);
       }
 
-      var g = new plok.chart(d);
+      var g = new plok.chart(d, view);
       g.append('content');
-      g.update();
 
-      window.setInterval(function() {
-        x += (Math.random() - 0.5) * 5;
-        now = new Date();
-        d.append(now, x);
-        g.view.end = now;
-        g.update();
-      }, 100);
+      view.animate();
 
     </script>
 
