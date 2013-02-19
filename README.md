@@ -15,19 +15,25 @@ Download the latest build here:
 
 Or include it on your page directly:
 
+```html
     <script type="text/javascript" src="http://plok.zkpq.ca/plok.min.js"></script>
+```
 
 `plok` may also benefit from using this stylesheet:
 
 * <http://plok.zkpq.ca/plok.css>
 
-    <link rel="stylesheet" href="http://plok.zkpq.ca/plok.css" type="text/css" />
-
+```html
+<link rel="stylesheet" href="http://plok.zkpq.ca/plok.css" type="text/css" />
+```
 
 Example
 -------
 
-<iframe src="http://plok.zkpq.ca/examples/graph.html" width=100% height="400"></iframe>
+TODO
+
+<iframe src="http://plok.zkpq.ca/examples/graph.html" width=100% height="400">
+</iframe>
 
 
 Usage
@@ -35,21 +41,23 @@ Usage
 
 TODO
 
-    var view = new plok.view();
-    var data = new plok.data();
 
-    // generate some random values
-    var now = +(new Date());
-    var x = 100;
-    for (var i=now-100000; i<now+100000; i+=100) {
-        x += (Math.random() - 0.5) * 5;
-        data.append(i, x);
-    }
+```javascript
+var view = new plok.view();
+var data = new plok.data();
 
-    pyy('#content').div({cls:'plok-chart-root'},
-    (new plok.topaxis(view, 480)).dom,
-    (new plok.chart(view, data)).dom
-    );
+// generate some random values
+var now = +(new Date());
+var x = 100;
+for (var i=now-100000; i<now+100000; i+=100) {
+    x += (Math.random() - 0.5) * 5;
+    data.append(i, x);
+}
 
-    view.animate();
+pyy('#content').div({cls:'plok-chart-root'},
+(new plok.topaxis(view, 480)).dom,
+(new plok.chart(view, data)).dom
+);
 
+view.animate();
+```
