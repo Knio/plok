@@ -3,6 +3,7 @@
 
   <head>
     <script type="text/javascript" src="../plok.js"></script>
+    <script type="text/javascript" src="http://pyy.zkpq.ca/pyy.js"></script>
     <link rel="stylesheet" href="../plok.css" type="text/css" />
   </head>
 
@@ -12,16 +13,19 @@
     <script type="text/javascript">
 
       var view = new plok.view();
-      var d = new plok.data();
+      var data = new plok.data();
+
       var now = +(new Date());
       var x = 100;
       for (var i=now-100000; i<now+100000; i+=100) {
         x += (Math.random() - 0.5) * 5;
-        d.append(i, x);
+        data.append(i, x);
       }
 
-      var g = new plok.chart(d, view);
-      g.append('content');
+      pyy('#content').div({cls:'plok-chart-root'},
+        (new plok.topaxis(view, 480)).dom,
+        (new plok.chart(view, data)).dom
+      );
 
       view.animate();
 

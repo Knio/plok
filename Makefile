@@ -1,5 +1,6 @@
 all: \
 	plok.js \
+	plok.min.js \
 	plok.css
 
 plok.css: src/plok.css
@@ -16,6 +17,8 @@ plok.js:
 %.min.js: %.js
 	java -jar lib/compiler.jar --js $< > $@
 
+lib/d3.v3.min.js:
+	wget -O $@ http://d3js.org/d3.v3.min.js
 
 build/%.js: src/%.js
 	@echo "(function() {\n" > $@
@@ -28,7 +31,7 @@ build/%.js: src/%.js
 
 clean:
 	-rm build/* -r
-	-rm plok.js plok.min.js plok.css
+	-rm plok.js plok.min.js plok.css lib/d3.v3.min.js
 
 
 .PHONY: clean

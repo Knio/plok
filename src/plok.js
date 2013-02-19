@@ -26,13 +26,13 @@ var COLORS = [
 plok.view = function() {
   this.end = +(new Date());
   this.scale = 100.0; // miliseconds per pixel
-  this.charts = [];
   this.max = -1;
   this.min =  0;
   this.timer = null;
+  this.subscribers = [];
 
-  this.add_chart = function(g) {
-    this.charts.push(g);
+  this.subscribe = function(g) {
+    this.subscribers.push(g);
   };
 
   this.set = function(x) {
@@ -76,8 +76,8 @@ plok.view = function() {
   }
 
   this.update = function() {
-    for (var i = 0; i < this.charts.length; i++) {
-      this.charts[i].update();
+    for (var i = 0; i < this.subscribers.length; i++) {
+      this.subscribers[i].update();
     }
   }
 
@@ -161,49 +161,22 @@ plok.data = function(data) {
 
 };
 
-// TODO: multiple data
 
-plok.chart = function(data, view) {
+plok.topaxis = function(view, w) {
   view = this.view = view || _view;
-  view.add_chart(this);
+  view.subscribe(this);
 
-
-  var canvas = this.canvas = document.createElement('canvas');
-  var svg    = this.svg    =
-      document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
-  var w = canvas.width  = 480;
-  var h = canvas.height = 240;
+  var svg = this.dom =
+    document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
   var scale = d3.time.scale();
   var axis = d3.svg.axis();
-  axis.orient('top');
   var _ax;
+  axis.orient('top');
 
-  (function() {
-
-    var d = d3.select(svg);
-    d.attr('width', w).attr('height', 20).attr('class', 'axis');
-    _ax = d.append('g').attr('transform', 'translate(0, 20)');
-
-  }).call(this);
-
-  this.container = document.createElement('div');
-  this.container.setAttribute('class', 'plok-chart-root');
-  this.container.appendChild(this.svg);
-  this.container.appendChild(this.canvas);
-  this.container.addEventListener('mousewheel', function(e) {
-    view.scroll(e.wheelDeltaY / 120.);
-  }, false);
-
-  var ctx = this.ctx = this.canvas.getContext('2d');
-
-  this.append = function(dom) {
-    if (typeof dom === 'string') {
-      dom = document.getElementById(dom);
-    }
-    dom.appendChild(this.container);
-  };
+  var d = d3.select(svg);
+  d.attr('width', w).attr('height', 20).attr('class', 'axis');
+  _ax = d.append('g').attr('transform', 'translate(0, 20)');
 
   this.update = function() {
     var stop = view.end;
@@ -213,7 +186,39 @@ plok.chart = function(data, view) {
     scale.range([0, w]);
     axis.scale(scale);
     _ax.call(axis);
+  };
 
+};
+
+plok.chart = function(view, data) {
+  view = this.view = view || _view;
+  view.subscribe(this);
+
+
+  var canvas = this.dom = this.canvas = document.createElement('canvas');
+
+  var w = canvas.width  = 480;
+  var h = canvas.height = 240;
+
+  // this.container = document.createElement('div');
+  // this.container.setAttribute('class', 'plok-chart-root');
+  // this.container.appendChild(this.canvas);
+
+  // this.append = function(dom) {
+  //   if (typeof dom === 'string') {
+  //     dom = document.getElementById(dom);
+  //   }
+  //   dom.appendChild(this.container);
+  // };
+
+  this.canvas.addEventListener('mousewheel', function(e) {
+    view.scroll(e.wheelDeltaY / 120.);
+  }, false);
+
+  var ctx = this.ctx = this.canvas.getContext('2d');
+
+
+  this.update = function() {
     draw();
   }
 
