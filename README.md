@@ -16,7 +16,7 @@ Download the latest build here:
 Or include it on your page directly:
 
 ```html
-    <script type="text/javascript" src="http://plok.zkpq.ca/plok.min.js"></script>
+<script type="text/javascript" src="http://plok.zkpq.ca/plok.min.js"></script>
 ```
 
 `plok` may also benefit from using this stylesheet:
@@ -31,9 +31,6 @@ Example
 -------
 
 TODO
-
-<iframe src="http://plok.zkpq.ca/examples/graph.html" width=100% height="400">
-</iframe>
 
 
 Usage

@@ -23,13 +23,17 @@ var COLORS = [
   'hsla(347, 70%, 70%, 1.0)'
 ];
 
-plok.view = function() {
-  this.end = +(new Date());
-  this.scale = 100.0; // miliseconds per pixel
+plok.view = function(end) {
+  this.end = +end || +(new Date());
+  this.scale = 10.0; // miliseconds per pixel
   this.max = -1;
   this.min =  0;
   this.timer = null;
   this.subscribers = [];
+
+  this.clear = function() {
+    this.subscribers = [];
+  }
 
   this.subscribe = function(g) {
     this.subscribers.push(g);
@@ -97,6 +101,8 @@ plok.data = function(data) {
   };
 
   this.get_range = function(start, stop, step) {
+    // returns array of length [step],
+    // of data values between [start, stop)
     var data = this.data;
     var n = data.length;
     start = +start;
@@ -137,6 +143,8 @@ plok.data = function(data) {
       t1 = data[s][0];
     }
 
+    // if multiple data values overlap the range [i, i+1),
+    // average them
     for (var i = start; i < stop; i += step) {
       var a = 0;
       var x = i + step;
