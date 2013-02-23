@@ -27,7 +27,7 @@ var COLORS = [
 
 plok.view = function(end) {
   this.end = +end || +(new Date());
-  this.scale = 10.0; // miliseconds per pixel
+  this.scale = 25.0; // miliseconds per pixel
   this.max = -1;
   this.min =  0;
   this.timer = null;
@@ -185,7 +185,7 @@ plok.topaxis = function(view, w) {
   axis.orient('top');
 
   var d = d3.select(svg);
-  d.attr('width', w).attr('height', 20).attr('class', 'axis');
+  d.attr('width', w).attr('height', 20).attr('class', 'plok-axis');
   _ax = d.append('g').attr('transform', 'translate(0, 20)');
 
   this.update = function() {
@@ -207,7 +207,7 @@ plok.chart = function(view, data) {
 
   var canvas = this.dom = this.canvas = document.createElement('canvas');
 
-  var w = canvas.width  = 480;
+  var w = canvas.width  = 640;
   var h = canvas.height = 240;
 
   // this.container = document.createElement('div');

@@ -22,8 +22,8 @@
         data.append(i, x);
       }
 
-      pyy('#content').div({cls:'plok-chart-root'},
-        (new plok.topaxis(view, 480)).dom,
+      pyy('#content').div(
+        (new plok.topaxis(view, 640)).dom,
         (new plok.chart(view, data)).dom
       );
 

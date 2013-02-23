@@ -1,11 +1,11 @@
 
-div.plok-chart-root > svg {
+svg.plok-axis {
     display: block;
     font: 10px sans-serif;
 }
 
 
-div.plok-chart-root > svg line {
+svg.plok-axis line {
   background: #000;
   opacity: .2;
   z-index: 2;
@@ -14,6 +14,6 @@ div.plok-chart-root > svg line {
   shape-rendering: crispEdges;
 }
 
-div.plok-chart-root > svg path {
+svg.plok-axis path {
   display: none;
 }
