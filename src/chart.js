@@ -37,6 +37,17 @@ plok.chart = function(parent_selector, view, data) {
     view.scroll(e.wheelDeltaY / 120.);
   }, false);
 
+  canvas.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(e);
+    if (e.button == 0) {
+      view.scale_by(0.5);
+    } else if (e.button == 2) {
+      view.scale_by(2.0);
+    }
+  }, false);
+
   parent.appendChild(canvas);
 
   var ctx = this.ctx = canvas.getContext('2d');

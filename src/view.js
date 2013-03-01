@@ -5,7 +5,7 @@ plok.view = function(start, stop) {
   this.end = +start || +(new Date());
   this.scale = 25.0; // miliseconds per pixel
 
-  var static_mode = (start && end);
+  var static_mode = (start && stop);
   var timer = null;
   var subscribers = [];
 
@@ -18,8 +18,19 @@ plok.view = function(start, stop) {
     subscribers.push(g);
   };
 
+  this.update = function() {
+    for (var i = 0; i < subscribers.length; i++) {
+      subscribers[i].update();
+    }
+  }
+
   this.set = function(x) {
     this.end = x;
+    this.update();
+  };
+
+  this.scale_by = function(x) {
+    this.scale *= x;
     this.update();
   };
 
@@ -31,6 +42,7 @@ plok.view = function(start, stop) {
 
     var x = this.end + d;
 
+    console.log([this.end, start, x, stop]);
     if (static_mode) {
       x = Math.min(Math.max(start, x), stop);
     } else {
@@ -57,12 +69,6 @@ plok.view = function(start, stop) {
     if (timer) {
       window.clearInterval(timer);
       timer = null;
-    }
-  }
-
-  this.update = function() {
-    for (var i = 0; i < subscribers.length; i++) {
-      subscribers[i].update();
     }
   }
 };
