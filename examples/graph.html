@@ -9,7 +9,8 @@
 
   <body>
 
-    <div id="content"></div>
+    <div id="graph" style="height: 500px"></div>
+
     <script type="text/javascript">
 
       var view = new plok.view();
@@ -22,10 +23,8 @@
         data.append(i, x);
       }
 
-      pyy('#content').div(
-        (new plok.topaxis(view, 640)).dom,
-        (new plok.chart(view, data)).dom
-      );
+      new plok.topaxis('#graph', view);
+      new plok.chart  ('#graph', view, data);
 
       view.animate();
 

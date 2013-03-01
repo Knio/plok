@@ -2,43 +2,28 @@
 
 var plok = window.plok = {};
 
-var FILL_COLORS = [
-  'hsla(32,  70%, 80%, 0.2)',
-  'hsla(167, 70%, 80%, 0.2)',
-  'hsla(302, 70%, 80%, 0.2)',
-  'hsla(77,  70%, 80%, 0.2)',
-  'hsla(122, 70%, 80%, 0.2)',
-  'hsla(257, 70%, 80%, 0.2)',
-  'hsla(212, 70%, 80%, 0.2)',
-  'hsla(347, 70%, 80%, 0.2)'
-];
+}());
 
+(function() {
 
-var COLORS = [
-  'hsla(32,  70%, 70%, 1.0)',
-  'hsla(167, 70%, 70%, 1.0)',
-  'hsla(302, 70%, 70%, 1.0)',
-  'hsla(77,  70%, 70%, 1.0)',
-  'hsla(122, 70%, 70%, 1.0)',
-  'hsla(257, 70%, 70%, 1.0)',
-  'hsla(212, 70%, 70%, 1.0)',
-  'hsla(347, 70%, 70%, 1.0)'
-];
+// want a view of a fixed range
+// want a view tracking the current time, plus some time in the past
 
-plok.view = function(end) {
-  this.end = +end || +(new Date());
+plok.view = function(start, stop) {
+  this.end = +start || +(new Date());
   this.scale = 25.0; // miliseconds per pixel
-  this.max = -1;
-  this.min =  0;
-  this.timer = null;
-  this.subscribers = [];
 
-  this.clear = function() {
-    this.subscribers = [];
+  var static_mode = (start && end);
+  var timer = null;
+  var subscribers = [];
+
+  this.destroy = function() {
+    subscribers = [];
+    this.stopanimate();
   }
 
   this.subscribe = function(g) {
-    this.subscribers.push(g);
+    subscribers.push(g);
   };
 
   this.set = function(x) {
@@ -48,18 +33,20 @@ plok.view = function(end) {
 
   this.scroll = function(d) {
     this.stopanimate();
-    var x = this.end + d * this.scale * 16;
-    if (this.max === -1) {
+
+    d *= this.scale;
+    d *= 32;
+
+    var x = this.end + d;
+
+    if (static_mode) {
+      x = Math.min(Math.max(start, x), stop);
+    } else {
       var now = +(new Date());
-      if (x > now) {
-        x = now;
+      x = Math.min(Math.max(0, x), now);
+      if (x == now) {
         this.animate();
       }
-    } else if (this.max) {
-      x = Math.min(x, this.max);
-    }
-    if (this.min) {
-      x = Math.max(x, this.min);
     }
     this.set(x);
   };
@@ -68,27 +55,31 @@ plok.view = function(end) {
     this.stopanimate();
     d = d || this.scale;
     var t = this;
-    this.timer = window.setInterval(function() {
+    timer = window.setInterval(function() {
       t.set(+(new Date()));
       t.update();
     }, d);
   };
 
   this.stopanimate = function() {
-    if (this.timer) {
-      window.clearInterval(this.timer);
-      this.timer = null;
+    if (timer) {
+      window.clearInterval(timer);
+      timer = null;
     }
   }
 
   this.update = function() {
-    for (var i = 0; i < this.subscribers.length; i++) {
-      this.subscribers[i].update();
+    for (var i = 0; i < subscribers.length; i++) {
+      subscribers[i].update();
     }
   }
-
 };
-var _view = new plok.view();
+
+window._view = new plok.view();
+
+}());
+
+(function() {
 
 
 plok.data = function(data) {
@@ -171,22 +162,30 @@ plok.data = function(data) {
 
 };
 
+}());
 
-plok.topaxis = function(view, w) {
-  view = this.view = view || _view;
+(function() {
+
+
+plok.topaxis = function(parent_selector, view) {
+  view = this.view = view || window._view;
   view.subscribe(this);
 
-  var svg = this.dom =
-    document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
   var scale = d3.time.scale();
   var axis = d3.svg.axis();
   var _ax;
   axis.orient('top');
 
+  var parent = d3.select(parent_selector)[0][0];
+  var w = parent.clientWidth;
+  console.log(parent);
+  var svg = this.dom =
+    document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   var d = d3.select(svg);
   d.attr('width', w).attr('height', 20).attr('class', 'plok-axis');
   _ax = d.append('g').attr('transform', 'translate(0, 20)');
+  parent.appendChild(svg);
 
   this.update = function() {
     var stop = view.end;
@@ -197,36 +196,54 @@ plok.topaxis = function(view, w) {
     axis.scale(scale);
     _ax.call(axis);
   };
-
 };
 
-plok.chart = function(view, data) {
-  view = this.view = view || _view;
+}());
+
+(function() {
+
+
+var FILL_COLORS = [
+  'hsla(32,  70%, 80%, 0.2)',
+  'hsla(167, 70%, 80%, 0.2)',
+  'hsla(302, 70%, 80%, 0.2)',
+  'hsla(77,  70%, 80%, 0.2)',
+  'hsla(122, 70%, 80%, 0.2)',
+  'hsla(257, 70%, 80%, 0.2)',
+  'hsla(212, 70%, 80%, 0.2)',
+  'hsla(347, 70%, 80%, 0.2)'
+];
+
+
+var COLORS = [
+  'hsla(32,  70%, 70%, 1.0)',
+  'hsla(167, 70%, 70%, 1.0)',
+  'hsla(302, 70%, 70%, 1.0)',
+  'hsla(77,  70%, 70%, 1.0)',
+  'hsla(122, 70%, 70%, 1.0)',
+  'hsla(257, 70%, 70%, 1.0)',
+  'hsla(212, 70%, 70%, 1.0)',
+  'hsla(347, 70%, 70%, 1.0)'
+];
+
+plok.chart = function(parent_selector, view, data) {
+  view = this.view = view || window._view;
   view.subscribe(this);
 
-
+  var parent = d3.select(parent_selector)[0][0];
   var canvas = this.dom = this.canvas = document.createElement('canvas');
 
-  var w = canvas.width  = 640;
-  var h = canvas.height = 240;
+  var w = canvas.width  = parent.clientWidth;
+  var h = canvas.height = parent.clientHeight;
 
-  // this.container = document.createElement('div');
-  // this.container.setAttribute('class', 'plok-chart-root');
-  // this.container.appendChild(this.canvas);
-
-  // this.append = function(dom) {
-  //   if (typeof dom === 'string') {
-  //     dom = document.getElementById(dom);
-  //   }
-  //   dom.appendChild(this.container);
-  // };
-
-  this.canvas.addEventListener('mousewheel', function(e) {
+  canvas.addEventListener('mousewheel', function(e) {
+    e.preventDefault();
     view.scroll(e.wheelDeltaY / 120.);
   }, false);
 
-  var ctx = this.ctx = this.canvas.getContext('2d');
+  parent.appendChild(canvas);
 
+  var ctx = this.ctx = canvas.getContext('2d');
 
   this.update = function() {
     draw();

@@ -8,6 +8,10 @@ plok.css: src/plok.css
 
 plok.js: \
 	build/plok.js \
+	build/view.js \
+	build/data.js \
+	build/axis.js \
+	build/chart.js \
 	lib/d3.v3.min.js \
 	Makefile
 
