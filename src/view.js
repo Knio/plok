@@ -38,7 +38,6 @@ plok.view = function(start, stop) {
     this.stopanimate();
 
     d *= this.scale;
-    d *= 32;
 
     var x = this.end + d;
 

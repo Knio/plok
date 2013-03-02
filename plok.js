@@ -46,7 +46,6 @@ plok.view = function(start, stop) {
     this.stopanimate();
 
     d *= this.scale;
-    d *= 32;
 
     var x = this.end + d;
 
@@ -196,14 +195,14 @@ var FILL_COLORS = [
 
 
 var COLORS = [
-  'hsla(32,  70%, 70%, 1.0)',
-  'hsla(167, 70%, 70%, 1.0)',
-  'hsla(302, 70%, 70%, 1.0)',
-  'hsla(77,  70%, 70%, 1.0)',
-  'hsla(122, 70%, 70%, 1.0)',
-  'hsla(257, 70%, 70%, 1.0)',
-  'hsla(212, 70%, 70%, 1.0)',
-  'hsla(347, 70%, 70%, 1.0)'
+  'hsla(32,  70%, 60%, 1.0)',
+  'hsla(167, 70%, 60%, 1.0)',
+  'hsla(302, 70%, 60%, 1.0)',
+  'hsla(77,  70%, 60%, 1.0)',
+  'hsla(122, 70%, 60%, 1.0)',
+  'hsla(257, 70%, 60%, 1.0)',
+  'hsla(212, 70%, 60%, 1.0)',
+  'hsla(347, 70%, 60%, 1.0)'
 ];
 
 
@@ -216,14 +215,14 @@ plok.data_adapter = function(data, color_idx) {
     var data = this.data.get_range(start, stop);
     var d = [];
     if (data.length == 0) {
-      return d;
+      return {data: d, max_value: 0};
     }
 
     // index of first data point where ts <= start
     // may be invalid (-1)
     var s = data[0][0] <= start ? 0 : -1;
 
-    data.push([stop, 0]);
+    data.push([stop + 1, 0]);
 
     var v = 0;                // current value
     var t1 = 0;               // current ts
@@ -240,7 +239,7 @@ plok.data_adapter = function(data, color_idx) {
     // average them
     for (var i = start; i < stop; i += step) {
       var a = 0;
-      var x = i + step;
+      var x = Math.min(i + step, stop);
       t1 = i;
       while (t2 < x) {
         a += (t2 - t1) * v;
@@ -264,7 +263,6 @@ plok.data_adapter = function(data, color_idx) {
     var values = that.get_values(start, stop, step);
     var data = values.data;
     this.max_value = values.max_value;
-    // console.log(data);
 
     this.render_background = function(scale) {
       var x;
@@ -272,7 +270,11 @@ plok.data_adapter = function(data, color_idx) {
       ctx.fillStyle = FILL_COLORS[that.color_idx];
       for (x = 0; x < w; x++) {
         y = data[x] * scale;
-        ctx.fillRect(x, 0, 1, y);
+        if (y >= 0) {
+          ctx.fillRect(x, 0, 1, y);
+        } else {
+          ctx.fillRect(x, h, 1, y);
+        }
       }
     };
 
@@ -287,9 +289,14 @@ plok.data_adapter = function(data, color_idx) {
         y = data[x] * scale;
         if (p === null) { p = y; }
         s = Math.min(p, y);
-        e = Math.abs(p - y) + 2;
+        e = Math.abs(p - y) + 1;
         p = y;
-        ctx.fillRect(x, s, 1, e);
+        if (e >= 0) {
+          ctx.fillRect(x, s, 1, e);
+        }
+        if (s <= 0) {
+          ctx.fillRect(x, h + s, 1, e);
+        }
       }
     };
   }
@@ -307,19 +314,35 @@ plok.chart = function(parent_selector, view) {
 
   canvas.addEventListener('mousewheel', function(e) {
     e.preventDefault();
-    view.scroll(e.wheelDeltaY / -120.);
+    view.scale_by(1 - (e.wheelDeltaY / 1200.));
   }, false);
 
-  canvas.addEventListener('mousedown', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log(e);
-    if (e.button === 0) {
-      view.scale_by(0.5);
-    } else if (e.button == 2) {
-      view.scale_by(2.0);
-    }
-  }, false);
+  (function() {
+    var down = 0;
+    var x = 0;
+
+    canvas.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      down = 1;
+    }, false);
+
+    canvas.addEventListener('mouseup', function(e) {
+      e.preventDefault();
+      down = 0;
+    }, false);
+
+
+    canvas.addEventListener('mousemove', function(e) {
+      e.preventDefault();
+      if (e.which === 0) { down = 0; }
+      var dx = x - e.screenX;
+      x = e.screenX;
+      if (down) {
+        view.scroll(dx);
+      }
+    }, false);
+  })();
+
 
   parent.appendChild(canvas);
 
@@ -347,7 +370,7 @@ plok.chart = function(parent_selector, view) {
 
     var i;
     var renderers = [];
-    var maxes = [];
+    var maxes = [1e-5];
     for (i = 0; i < data_adapters.length; i++) {
       var r = new data_adapters[i].renderer(ctx, w, h, start, stop);
       renderers.push(r);
@@ -355,7 +378,7 @@ plok.chart = function(parent_selector, view) {
     }
 
     // find nice scale value
-    var max = Math.max.apply(this, maxes);
+    var max = Math.max.apply(this, maxes) * 1.05;
     var base = Math.pow(10, Math.floor(Math.log(max) / Math.log(10)));
     var scale = (1 + Math.floor(max / base)) * base;
 
