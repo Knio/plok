@@ -25,7 +25,7 @@ plok.view = function(start, stop) {
   }
 
   this.set = function(x) {
-    this.end = x;
+    this.end = +x;
     this.update();
   };
 
@@ -42,7 +42,6 @@ plok.view = function(start, stop) {
 
     var x = this.end + d;
 
-    console.log([this.end, start, x, stop]);
     if (static_mode) {
       x = Math.min(Math.max(start, x), stop);
     } else {

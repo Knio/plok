@@ -20,6 +20,9 @@ plok.topaxis = function(parent_selector, view) {
   parent.appendChild(svg);
 
   this.update = function() {
+    w = parent.clientWidth;
+    d.attr('width', w);
+
     var stop = view.end;
     var start = stop - view.scale * w;
 

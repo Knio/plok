@@ -7,17 +7,17 @@ plok.data = function(data) {
     this.data.push([+ts, value]);
   };
   this.insert = function(ts, value) {
-
+    throw 'not implemented';
   };
 
-  this.get_range = function(start, stop, step) {
-    // returns array of length [step],
-    // of data values between [start, stop)
+  this.get_range = function(start, stop) {
+    // return array of [timestamp, value] enties
+    // where the first timestamp is <= start
+    // and the last timestamp is < end
     var data = this.data;
     var n = data.length;
     start = +start;
     stop = +stop;
-    step = +step;
     var s = 0;
     var e = n;
     var m, t;
@@ -32,49 +32,21 @@ plok.data = function(data) {
       } else {
         e = m;
       }
-      if (_i++ > 1000) {
-        throw 'infinite loop';
-      }
+      // if (_i++ > 1000) {
+      //   throw 'infinite loop';
+      // }
     }
 
-    data.push([stop + 1, 0]);
+    var v;
     var d = [];
-
-    s--;
-    // data[s][0] is <= start
-    // s may be -1
-
-    var v = 0;
-    var t1 = 0;
-    var t2 = data[s + 1][0];
-
-    if (s >= 0) {
-      v = data[s][1];
-      t1 = data[s][0];
-    }
-
-    // if multiple data values overlap the range [i, i+1),
-    // average them
-    for (var i = start; i < stop; i += step) {
-      var a = 0;
-      var x = i + step;
-      t1 = i;
-      while (t2 < x) {
-        a += (t2 - t1) * v;
-        s++;
-        v = data[s][1];
-        t1 = t2;
-        t2 = data[s + 1][0];
+    for (; s < data.length; s++) {
+      v = data[s];
+      if (v[0] >= stop) {
+        break;
       }
-      a += (x - t1) * v;
-      d.push(a / step);
-
+      d.push(v);
     }
-
-    data.pop();
-
     return d;
-
   }
 
 };

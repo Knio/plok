@@ -14,17 +14,26 @@
     <script type="text/javascript">
 
       var view = new plok.view();
-      var data = new plok.data();
 
+      var data1 = new plok.data();
       var now = +(new Date());
       var x = 100;
       for (var i=now-100000; i<now+100000; i+=100) {
         x += (Math.random() - 0.5) * 5;
-        data.append(i, x);
+        data1.append(i, x);
       }
 
+      var data2 = new plok.data();
+      var x = 100;
+      for (var i=now-100000; i<now+100000; i+=100) {
+        x += (Math.random() - 0.5) * 5;
+        data2.append(i, x);
+      }
+
+
+
       new plok.topaxis('#graph', view);
-      new plok.chart  ('#graph', view, data);
+      new plok.chart  ('#graph', view, data1, data2);
 
       view.animate();
 
