@@ -47,6 +47,14 @@ plok.data = function(data) {
       d.push(v);
     }
     return d;
+  };
+
+  this.get_value = function(ts, dfl) {
+    var v = this.get_range(ts, ts);
+    if (v.length) {
+      return v[0][1];
+    }
+    return dfl;
   }
 
 };

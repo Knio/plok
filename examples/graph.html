@@ -10,6 +10,8 @@
   <body>
 
     <div id="graph" style="height: 500px"></div>
+    <div id="legend1"></div>
+    <div id="legend2"></div>
 
     <script type="text/javascript">
 
@@ -34,6 +36,16 @@
 
       new plok.topaxis('#graph', view);
       new plok.chart  ('#graph', view, data1, data2);
+
+      view.subscribe({
+        update: function() {},
+        focus: function(x) {
+          var a = data1.get_value(x, 0);
+          var b = data2.get_value(x, 0);
+          pyy('#legend1').clear().text(pyy.utils.format("%3.2f", a));
+          pyy('#legend2').clear().text(pyy.utils.format("%3.2f", b));
+        }
+      })
 
       view.animate();
 

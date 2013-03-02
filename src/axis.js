@@ -31,4 +31,6 @@ plok.topaxis = function(parent_selector, view) {
     axis.scale(scale);
     _ax.call(axis);
   };
+
+  this.focus = function() { };
 };

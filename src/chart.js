@@ -131,7 +131,11 @@ plok.chart = function(parent_selector, view) {
 
   canvas.addEventListener('mousewheel', function(e) {
     e.preventDefault();
-    view.scale_by(1 - (e.wheelDeltaY / 1200.));
+    var x = (1 - (e.wheelDeltaY / 1200));
+    var p = (w - e.offsetX);
+    var t = (view.end - view.scale * p); // focused time
+    view.set(t + (view.scale * x * p));
+    view.scale_by(x);
   }, false);
 
   (function() {
@@ -157,6 +161,9 @@ plok.chart = function(parent_selector, view) {
       if (down) {
         view.scroll(dx);
       }
+      var p = (w - e.offsetX);
+      var t = (view.end - view.scale * p);
+      view.focus(t);
     }, false);
   })();
 
@@ -179,7 +186,14 @@ plok.chart = function(parent_selector, view) {
     w = canvas.width  = parent.clientWidth;
     h = canvas.height = parent.clientHeight;
     draw();
-  }
+  };
+
+  this.focus = function() { };
+
+  this.destroy = function() {
+    view.unsubscribe(this);
+
+  };
 
   var draw = function() {
     var stop = view.end;

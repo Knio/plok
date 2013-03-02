@@ -8,6 +8,7 @@ plok.view = function(start, stop) {
   var static_mode = (start && stop);
   var timer = null;
   var subscribers = [];
+  var focused = null;
 
   this.destroy = function() {
     subscribers = [];
@@ -18,11 +19,27 @@ plok.view = function(start, stop) {
     subscribers.push(g);
   };
 
+  this.unsubscribe = function(g) {
+    var s = [];
+    for (var i = 0; i < subscribers.length; i++) {
+      if (subscribers[i] === g) { continue }
+      s.push(subscribers[i]);
+    }
+    subscribers = s;
+  };
+
   this.update = function() {
     for (var i = 0; i < subscribers.length; i++) {
       subscribers[i].update();
     }
   }
+
+  this.focus = function(x) {
+    focused = +x;
+    for (var i = 0; i < subscribers.length; i++) {
+      subscribers[i].focus(focused);
+    }
+  };
 
   this.set = function(x) {
     this.end = +x;
@@ -58,8 +75,12 @@ plok.view = function(start, stop) {
     d = d || this.scale;
     var t = this;
     timer = window.setInterval(function() {
+      var last = t.end;
       t.set(+(new Date()));
       t.update();
+      var f = focused + t.end - last;
+      console.log([last, t.end, focused, f]);
+      t.focus(f);
     }, d);
   };
 
