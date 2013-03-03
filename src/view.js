@@ -28,9 +28,20 @@ plok.view = function(start, stop) {
     subscribers = s;
   };
 
-  this.update = function() {
-    for (var i = 0; i < subscribers.length; i++) {
-      subscribers[i].update();
+  var update_pending = false;
+  this.update = function(now) {
+    var do_update = function() {
+      for (var i = 0; i < subscribers.length; i++) {
+        subscribers[i].update();
+      }
+      update_pending = false;
+    }
+    if (now) {
+      do_update();
+    }
+    else if (!update_pending) {
+      update_pending = true;
+      window.setTimeout(do_update, 10);
     }
   }
 
