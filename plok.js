@@ -87,7 +87,6 @@ plok.view = function(start, stop) {
       t.set(+(new Date()));
       t.update();
       var f = focused + t.end - last;
-      console.log([last, t.end, focused, f]);
       t.focus(f);
     }, d);
   };
@@ -184,7 +183,6 @@ plok.topaxis = function(parent_selector, view) {
 
   var parent = d3.select(parent_selector)[0][0];
   var w = parent.clientWidth;
-  console.log(parent);
   var svg = this.dom =
     document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   var d = d3.select(svg);

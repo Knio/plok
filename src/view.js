@@ -79,7 +79,6 @@ plok.view = function(start, stop) {
       t.set(+(new Date()));
       t.update();
       var f = focused + t.end - last;
-      console.log([last, t.end, focused, f]);
       t.focus(f);
     }, d);
   };
