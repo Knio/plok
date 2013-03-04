@@ -129,14 +129,36 @@ plok.chart = function(parent_selector, view) {
   var w = canvas.width  = parent.clientWidth;
   var h = canvas.height = parent.clientHeight;
 
-  canvas.addEventListener('mousewheel', function(e) {
+  var mouse_x = 0;
+  var scroll = function(e) {
     e.preventDefault();
-    var x = (1 - (e.wheelDeltaY / 1200));
-    var p = (w - e.offsetX);
+
+    var delta = 0;
+    var h = e.wheelDelta, d = e.detail;
+    if (d) {
+      // Opera
+      if (h) {
+        delta = h / d / 40 * d > 0 ? 1 : -1;
+      } else {
+        // Firefox
+        // TODO: do not /3 for OS X
+        delta = -d / 3;
+      }
+    } else {
+      // IE/Safari/Chrome
+      // TODO: /3 for Chrome OS X
+      delta = h / 120;
+    }
+    var x = (1 - (delta / 10));
+    var p = (w - e.clientX + canvas.offsetLeft);
     var t = (view.end - view.scale * p); // focused time
     view.set(t + (view.scale * x * p));
     view.scale_by(x);
-  }, false);
+    console.log(view.scale);
+  };
+  canvas.addEventListener('mousewheel', scroll, false);
+  canvas.addEventListener('DOMMouseScroll', scroll, false);
+
 
   (function() {
     var down = 0;

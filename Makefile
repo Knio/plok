@@ -12,7 +12,7 @@ plok.js: \
 	build/data.js \
 	build/axis.js \
 	build/chart.js \
-	lib/d3.v3.min.js \
+	lib/d3.v3.js \
 	Makefile
 
 plok.js:
@@ -21,8 +21,8 @@ plok.js:
 %.min.js: %.js
 	java -jar lib/compiler.jar --js $< > $@
 
-lib/d3.v3.min.js:
-	wget -O $@ http://d3js.org/d3.v3.min.js
+lib/d3.v3.js:
+	wget -O $@ http://d3js.org/d3.v3.js
 
 build/%.js: src/%.js
 	@echo "(function() {\n" > $@
@@ -35,7 +35,7 @@ build/%.js: src/%.js
 
 clean:
 	-rm build/* -r
-	-rm plok.js plok.min.js plok.css lib/d3.v3.min.js
+	-rm plok.js plok.min.js plok.css lib/d3.v3.js
 
 
 .PHONY: clean

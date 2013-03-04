@@ -81,6 +81,7 @@ plok.view = function(start, stop) {
     this.set(x);
   };
 
+  this.animated = false;
   this.animate = function(d) {
     this.stopanimate();
     d = d || this.scale;
@@ -92,13 +93,15 @@ plok.view = function(start, stop) {
       var f = focused + t.end - last;
       t.focus(f);
     }, d);
+    this.animated = true;
   };
 
   this.stopanimate = function() {
     if (timer) {
       window.clearInterval(timer);
-      timer = null;
     }
+    timer = null;
+    this.animated = false;
   }
 };
 
