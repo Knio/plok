@@ -1,5 +1,5 @@
 
-var FILL_COLORS = [
+var FILL_COLORS = plok.FILL_COLORS = [
   'hsla(32,  70%, 80%, 0.2)',
   'hsla(167, 70%, 80%, 0.2)',
   'hsla(302, 70%, 80%, 0.2)',
@@ -11,7 +11,7 @@ var FILL_COLORS = [
 ];
 
 
-var COLORS = [
+var COLORS = plok.COLORS = [
   'hsla(32,  70%, 60%, 1.0)',
   'hsla(167, 70%, 60%, 1.0)',
   'hsla(302, 70%, 60%, 1.0)',
@@ -154,7 +154,6 @@ plok.chart = function(parent_selector, view) {
     var t = (view.end - view.scale * p); // focused time
     view.set(t + (view.scale * x * p));
     view.scale_by(x);
-    console.log(view.scale);
   };
   canvas.addEventListener('mousewheel', scroll, false);
   canvas.addEventListener('DOMMouseScroll', scroll, false);
