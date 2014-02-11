@@ -30,7 +30,7 @@ Or include it on your page directly:
 Example
 -------
 
-TODO
+See the example graph here: <http://plok.zkpq.ca/examples/graph.html>
 
 
 Usage
