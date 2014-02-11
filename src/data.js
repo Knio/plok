@@ -55,6 +55,6 @@ plok.data = function(data) {
       return v[0][1];
     }
     return dfl;
-  }
+  };
 
 };

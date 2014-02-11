@@ -116,7 +116,7 @@ plok.data_adapter = function(data, color_idx) {
         }
       }
     };
-  }
+  };
 };
 
 plok.chart = function(parent_selector, view) {

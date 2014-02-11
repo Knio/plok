@@ -13,7 +13,7 @@ plok.view = function(start, stop) {
   this.destroy = function() {
     subscribers = [];
     this.stopanimate();
-  }
+  };
 
   this.subscribe = function(g) {
     subscribers.push(g);
@@ -35,7 +35,7 @@ plok.view = function(start, stop) {
         subscribers[i].update();
       }
       update_pending = false;
-    }
+    };
     if (now) {
       do_update();
     }
@@ -43,7 +43,7 @@ plok.view = function(start, stop) {
       update_pending = true;
       window.setTimeout(do_update, 10);
     }
-  }
+  };
 
   this.focus = function(x) {
     focused = +x;
@@ -102,7 +102,7 @@ plok.view = function(start, stop) {
     }
     timer = null;
     this.animated = false;
-  }
+  };
 };
 
 window._view = new plok.view();
