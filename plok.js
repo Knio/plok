@@ -408,7 +408,8 @@ plok.chart = function(parent_selector, view) {
       if (down) {
         view.scroll(dx);
       }
-      var p = (w - e.offsetX);
+      var ox = e.hasOwnProperty('offsetX') ? e.offsetX : e.layerX;
+      var p = (w - ox);
       var t = (view.end - view.scale * p);
       view.focus(t);
     }, false);
