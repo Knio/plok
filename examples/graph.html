@@ -4,7 +4,6 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="../plok.js"></script>
-    <script type="text/javascript" src="http://pyy.zkpq.ca/pyy.js"></script>
     <link rel="stylesheet" href="../plok.css" type="text/css" />
   </head>
 
@@ -43,8 +42,8 @@
         focus: function(x) {
           var a = data1.get_value(x, 0);
           var b = data2.get_value(x, 0);
-          pyy('#legend1').clear().text(pyy.utils.format("%3.2f", a));
-          pyy('#legend2').clear().text(pyy.utils.format("%3.2f", b));
+          document.querySelector('#legend1').innerText = a.toFixed(2);
+          document.querySelector('#legend2').innerText = b.toFixed(2);
         }
       })
 

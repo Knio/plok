@@ -123,7 +123,7 @@ plok.chart = function(parent_selector, view) {
   view = this.view = view || window._view;
   view.subscribe(this);
 
-  var parent = d3.select(parent_selector)[0][0];
+  var parent = document.querySelector(parent_selector);
   var canvas = this.dom = this.canvas = document.createElement('canvas');
 
   var w = canvas.width  = parent.clientWidth;

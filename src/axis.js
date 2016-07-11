@@ -4,12 +4,11 @@ plok.topaxis = function(parent_selector, view) {
   view.subscribe(this);
 
 
-  var scale = d3.time.scale();
-  var axis = d3.svg.axis();
+  var scale = d3.scaleTime();
+  var axis = d3.axisTop();
   var _ax;
-  axis.orient('top');
 
-  var parent = d3.select(parent_selector)[0][0];
+  var parent = document.querySelector(parent_selector);
   var w = parent.clientWidth;
   var svg = this.dom =
     document.createElementNS('http://www.w3.org/2000/svg', 'svg');
